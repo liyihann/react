@@ -1,0 +1,80 @@
+## fixtures
+该文件夹存放的是关于react的测试用例
+- **art** react中关于向量控件的测试用例
+- **attribute-behavior** 测试各种属性对控件的影响
+- **DOM** 一组react DOM用例，可以帮助我们快速确定浏览器存在的问题
+- **expiration** 不大了解这个是用来测试什么的，生命周期？
+- **fiber-debugger** fiber是react版本16以后的重要概念，可以更好的优化渲染UI，该包可以可视化的查看fiber的运行机制
+- **fiber-triangle** 不大了解这个是用来干什么的，里面只有一个index.htm
+- **packaging** 测试react不同的发行版本，使用不同的打包工具（js代码管理工具）是否可用
+- **schedule** 测试帧回调？？？
+- **ssr** 用于测试服务器端存的问题的测试用例
+- **tracing** 可以跟踪API调用的测试用例
+- **unstable-async** React中异步渲染的测试，里面的很多东西没有发布到react正式的版本中
+
+## packages
+该目录存放react仓库元数据（类似于`package.json`文件）。React组件主代码以及一些可独立使用的开源组件代码
+- **create-subscription** 用于React组件内部订阅外部数据源的工具
+- **events** React的合成事件系统相关代码。（与渲染器renderer无关，经常和dom、native一起使用）
+  React自己实现了一套高效的事件注册，存储，分发和重用逻辑，在DOM事件体系基础上做了很大改进，减少了内存消耗，简化了事件逻辑，并最大化的解决了IE等浏览器的不兼容问题。与DOM事件体系相比，它有如下特点
+  1. React组件上声明的事件最终绑定到了document这个DOM节点上，而不是React组件对应的DOM节点。故只有document这个节点上面才绑定了DOM原生事件，其他节点没有绑定事件。这样简化了DOM原生事件，减少了内存开销
+  2. React以队列的方式，从触发事件的组件向父组件回溯，调用它们在JSX中声明的callback。也就是React自身实现了一套事件冒泡机制。我们没办法用event.stopPropagation()来停止事件传播，应该使用event.preventDefault()
+  3. React有一套自己的合成事件SyntheticEvent，不同类型的事件会构造不同的SyntheticEvent
+  4. React使用对象池来管理合成事件对象的创建和销毁，这样减少了垃圾的生成和新对象内存的分配，大大提高了性能
+- **react** ：React核心组件代码，只包含最核心的必需功能。（经常需要和用于web的``react-dom``、 用于原生环境的`react-native` 一起使用）
+- **scheduler** 负责浏览器环境下协作调度（react内部使用，未完成公共api）
+- **simple-cache-provider** 为React应用提供缓存的组件（未最终发布，版本不稳定）
+- **shared** 公共代码
+  如果需要在多个模块之间共享部分的代码，将所需共享的代码存放于一个名为`shared`的文件夹，`shared`文件夹位于所有依赖于它的模块的父级。
+  例如,`src/renderers/dom/client`和`src/renderers/dom/server`共享的代码位于`src/renderers/dom/shared`。
+  同样的, 如果`src/renderers/dom/client`需要和`src/renderers/native`共享部分代码, 则这部分代码存放于 `src/renderers/shared`中。
+- **react-art** art包是一个js库，用来制作矢量图，其输出结果可使用于Canvas，SVG和VML中。
+- **react-dom** dom包作为dom和react服务器渲染器的进入点，要和react包进行配对。
+- **react-is**  这个包用于测试元素是否为特定的react元素类型。
+- **react-reconciler** 这是一个实验包，用于创造一般的react渲染器。（接口尚不稳定，使用时风险自行承担）
+- **react-renderer** 
+  - **react-native-renderer**
+  - **react-noop-renderer**  此包是用来debug Fiber的，不能直接使用。
+  - **react-test-renderer**  此包提供了实验性的react渲染器，不依靠dom或者本地移动环境就能渲染react组成部分来净化js对象。使用这个包，不需要浏览器或者jsdom，就能方便获得用react dom或native渲染的dom tree的快照。
+
+## scripts
+该文件夹存放的是 React 提供的额外功能的实现文件。
+- **babel**
+  提供了额外的功能，包含三个文件 transform-object-assign-require.js，transform-prevent-infinite-loops.js，wrap-warning-with-env-check.js。
+- **bench**
+  用于进行基准测试。
+- **circleci**
+  包含一系列 Linux/Unix 脚本文件 (.sh)，提供 build、检查证书、检查模块、测试出错信息打印等功能。
+- **error-codes**
+  这是 **Error Code System**, 旨在生成阶段 (production) 中提供 Debugging 支持，用于替代 React 在 development 阶段提供的带错误 ID 的错误信息（因为在生产阶段传递完整错误信息代价大）。在这之前，在 build-time 阶段，是没有报错的。通过这个功能，在生成阶段，React 抛出的错误包括 URL 和错误 ID。
+  - \_\_tests__
+  - README.md
+  - Type.js
+  - codes.json
+    该文件包含从错误 ID 到错误信息的映射。
+    该文件由 Gulp plugin 生成，被 Babel plugin 和 error decoder page 使用。
+    该文件是 append-only 的，其代码不能被更改或移除。
+  - extract-error.js
+    该文件是 node 脚本文件，可以 traverses our codebase （不知道这里怎么翻译）并且更新 codes.json 文件。
+  - invertObject.js
+  - replace-invariant-error-codes.js
+    该文件是一个 Babel 传递，用来将错误信息重写为用于生成（为了缩小体积）的错误 ID。
+- **eslint-rules**
+  这是一个假的 npm 包，允许我们将其视作 `eslint-plugin`。
+- **eslint**
+- **facts-tracker**
+- **flow**
+- **git**
+- **jest**
+- **perf-counters**
+  与 Linux 的 perf 事件计数器的轻量级的绑定。
+- **prettier**
+- **print-warnings**
+  该脚本用来提取来自函数调用 `warning()` 的信息，这些信息不会被任何源程序或者构造过程替换。这么做是为了能够在我们的内部仓库有这些信息的一份拷贝，并且可以定位他们中间意外的改变。
+- **release**
+  发布过程使用了两个脚本—— build 和  publish。
+  1. build 脚本的工作比较复杂，包括检查 CI、运行自动检测、打包等等，然后打印人工校验指令。
+  2. publish 脚本然后将构造好的程序发布到 npm 并且推到 GitHub。
+- **rollup**
+- **shared**
+- **tasks**
